@@ -539,7 +539,6 @@
 
 
 
-
 # src/services/agent_service.py
 
 import json
@@ -554,12 +553,12 @@ from src.core.config import settings
 # Disable tracing for cleaner output
 set_tracing_disabled(True)
 
-# --- NAVIGATION CONSTANTS (Shortened for brevity but functionality remains) ---
+# --- NAVIGATION CONSTANTS ---
 COURSE_NAVIGATION = {
     "intro": {"path": "/docs", "title": "Introduction"},
     "week 1": {"path": "/docs/module1/week1-intro-physical-ai", "title": "Week 1: Intro"},
     "module 1": {"path": "/docs/module1/week1-intro-physical-ai", "title": "Module 1"},
-    # ... (Baqi navigation same rahegi)
+    # Add other navigation items as needed
 }
 
 @function_tool
@@ -576,16 +575,19 @@ class TextbookAgent:
     """Agent for answering questions about the Physical AI textbook."""
     
     def __init__(self):
-        # --- FINAL FIX: Hardcoded v1beta URL ---
-        # Ye URL direct Google ke naye darwaze par le jayega
-        hardcoded_base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+        # --- FINAL URL FIX (ZABARDASTI) ---
+        # Hum settings se nahi uthayenge, yahin likh denge taake ghalti ki gunjaish na rahe.
+        # Note: Aakhri slash hata diya hai.
+        fixed_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+        
+        print(f"DEBUG: Connecting to Gemini at: {fixed_url}")
         
         self.client = AsyncOpenAI(
             api_key=settings.GEMINI_API_KEY,
-            base_url=hardcoded_base_url
+            base_url=fixed_url
         )
         
-        # Model set to gemini-1.5-flash
+        # Model
         self.model = OpenAIChatCompletionsModel(
             model="gemini-1.5-flash",
             openai_client=self.client
@@ -603,7 +605,8 @@ class TextbookAgent:
             for res in results:
                 context += f"---\n{res['text']}\n"
             return context
-        except Exception:
+        except Exception as e:
+            print(f"Search Error: {e}")
             return ""
 
     async def chat_stream(self, user_message: str, history: List[Dict], selected_text: Optional[str] = None, user_id: str = None, current_page: str = None):
@@ -629,4 +632,5 @@ class TextbookAgent:
         except Exception as e:
             yield f"I encountered an error connecting to my brain (Gemini): {str(e)}"
 
+# --- YE LINE BOHOT ZAROORI HAI (CRASH FIX) ---
 textbook_agent = TextbookAgent()
