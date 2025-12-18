@@ -578,7 +578,7 @@ class TextbookAgent:
         # --- FINAL URL FIX (ZABARDASTI) ---
         # Hum settings se nahi uthayenge, yahin likh denge taake ghalti ki gunjaish na rahe.
         # Note: Aakhri slash hata diya hai.
-        fixed_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+        fixed_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
         
         print(f"DEBUG: Connecting to Gemini at: {fixed_url}")
         
