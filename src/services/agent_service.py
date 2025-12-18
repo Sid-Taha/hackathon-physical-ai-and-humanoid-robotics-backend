@@ -538,58 +538,44 @@
 
 
 
-
 # src/services/agent_service.py
 
 import json
-from typing import List, Dict, Optional, AsyncGenerator, Annotated
+from typing import List, Dict, Optional
 from openai import AsyncOpenAI
 from agents import Agent, OpenAIChatCompletionsModel, Runner, function_tool, set_tracing_disabled
 from src.services.embedding_service import EmbeddingService
 from src.services.vector_store_service import VectorStoreService
-from src.services.db_service import db_service
 from src.core.config import settings
 
-# Disable tracing for cleaner output
 set_tracing_disabled(True)
 
 # --- NAVIGATION CONSTANTS ---
 COURSE_NAVIGATION = {
     "intro": {"path": "/docs", "title": "Introduction"},
     "week 1": {"path": "/docs/module1/week1-intro-physical-ai", "title": "Week 1: Intro"},
-    "module 1": {"path": "/docs/module1/week1-intro-physical-ai", "title": "Module 1"},
-    # Add other navigation items as needed
+    # ... (Baqi navigation same rahegi)
 }
 
 @function_tool
 def navigate_to_page(destination: str, section: str = "") -> str:
-    """Navigate to a specific page in the textbook."""
     return json.dumps({"action": "redirect", "path": "/docs", "message": f"Navigating to {destination}"})
 
 @function_tool
 def list_available_pages() -> str:
-    """List available pages."""
     return json.dumps({"pages": [{"title": "Home", "path": "/docs"}]})
 
 class TextbookAgent:
-    """Agent for answering questions about the Physical AI textbook."""
-    
     def __init__(self):
-        # --- FINAL URL FIX (ZABARDASTI) ---
-        # Hum settings se nahi uthayenge, yahin likh denge taake ghalti ki gunjaish na rahe.
-        # Note: Aakhri slash hata diya hai.
-        fixed_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
-        
-        print(f"DEBUG: Connecting to Gemini at: {fixed_url}")
-        
+        # --- OPENAI SETUP ---
+        # Ab hum seedha OpenAI use karenge (No Base URL needed)
         self.client = AsyncOpenAI(
-            api_key=settings.GEMINI_API_KEY,
-            base_url=fixed_url
+            api_key=settings.OPENAI_API_KEY
         )
         
-        # Model
+        # Model: gpt-4o ya gpt-3.5-turbo use karein
         self.model = OpenAIChatCompletionsModel(
-            model="gemini-1.5-flash",
+            model="gpt-4.1-mini",  # Agar gpt-4o mehengha lage to "gpt-3.5-turbo" kar dein
             openai_client=self.client
         )
         self.embedding_service = EmbeddingService()
@@ -610,10 +596,8 @@ class TextbookAgent:
             return ""
 
     async def chat_stream(self, user_message: str, history: List[Dict], selected_text: Optional[str] = None, user_id: str = None, current_page: str = None):
-        # 1. Search Textbook
         context = self._search_textbook(user_message)
         
-        # 2. Build Prompt
         system_prompt = f"""You are an expert AI Robotics tutor.
         Use the following textbook content to answer the student's question accurately.
         
@@ -622,15 +606,13 @@ class TextbookAgent:
         Answer concisely and helpfully.
         """
         
-        # 3. Create & Run Agent
         agent = Agent(name="Tutor", instructions=system_prompt, model=self.model)
         
         try:
             result = await Runner.run(agent, input=user_message)
             yield result.final_output
-            
         except Exception as e:
-            yield f"I encountered an error connecting to my brain (Gemini): {str(e)}"
+            yield f"I encountered an error: {str(e)}"
 
-# --- YE LINE BOHOT ZAROORI HAI (CRASH FIX) ---
+# Singleton instance
 textbook_agent = TextbookAgent()
