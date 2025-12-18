@@ -94,7 +94,7 @@ class DocumentLoader:
 if __name__ == "__main__":
     # Example usage:
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    textbook_docs_path = os.path.join(current_dir, "..", "..", "..", "physical-ai-textbook", "docs")
+    textbook_docs_path = os.path.join(current_dir, "..", "..", "..", "docs")
 
     loader = DocumentLoader(docs_path=textbook_docs_path)
     all_chunks = loader.load_and_chunk_documents()
