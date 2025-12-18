@@ -537,7 +537,6 @@
 
 
 
-
 # src/services/agent_service.py
 
 import json
@@ -554,7 +553,7 @@ set_tracing_disabled(True)
 COURSE_NAVIGATION = {
     "intro": {"path": "/docs", "title": "Introduction"},
     "week 1": {"path": "/docs/module1/week1-intro-physical-ai", "title": "Week 1: Intro"},
-    # ... (Baqi navigation same rahegi)
+    # ... (Baqi navigation same)
 }
 
 @function_tool
@@ -568,14 +567,13 @@ def list_available_pages() -> str:
 class TextbookAgent:
     def __init__(self):
         # --- OPENAI SETUP ---
-        # Ab hum seedha OpenAI use karenge (No Base URL needed)
         self.client = AsyncOpenAI(
             api_key=settings.OPENAI_API_KEY
         )
         
-        # Model: gpt-4o ya gpt-3.5-turbo use karein
+        # FIX: Model name corrected from 'gpt-4.1-mini' to 'gpt-4o-mini'
         self.model = OpenAIChatCompletionsModel(
-            model="gpt-4.1-mini",  # Agar gpt-4o mehengha lage to "gpt-3.5-turbo" kar dein
+            model="gpt-4o-mini", 
             openai_client=self.client
         )
         self.embedding_service = EmbeddingService()
