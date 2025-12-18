@@ -100,7 +100,7 @@ Guidelines:
 - Preserve markdown formatting"""
 
         response = client.chat.completions.create(
-            model="gemini-1.5-flash",
+            model="gemini-1.5-flash-latest",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"{background_summary}\n\nContent to personalize:\n\n{request.content}"}
@@ -142,7 +142,7 @@ CRITICAL GUIDELINES:
 - For Urdu: Use proper Urdu script and right-to-left text flow"""
 
         response = client.chat.completions.create(
-            model="gemini-1.5-flash",
+            model="gemini-1.5-flash-latest",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Translate to {request.target_language}:\n\n{request.content}"}
