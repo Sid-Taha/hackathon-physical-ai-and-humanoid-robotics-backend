@@ -628,3 +628,5 @@ class TextbookAgent:
             
         except Exception as e:
             yield f"I encountered an error connecting to my brain (Gemini): {str(e)}"
+
+textbook_agent = TextbookAgent()
