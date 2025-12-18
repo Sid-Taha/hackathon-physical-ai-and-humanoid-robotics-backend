@@ -260,21 +260,18 @@ class TextbookAgent:
     """Agent for answering questions about the Physical AI textbook using OpenAI Agents SDK with Gemini."""
     
     def __init__(self):
-        # --- FIX START ---
-        base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
-        
+        # --- FIX: Force v1beta endpoint for Gemini 1.5 Flash ---
         self.client = AsyncOpenAI(
             api_key=settings.GEMINI_API_KEY,
-            base_url=base_url
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         )
         
-        # Create OpenAI Agents SDK model
+        # Create OpenAI Agents SDK model with Gemini backend
         self.model = OpenAIChatCompletionsModel(
             model="gemini-1.5-flash",
             openai_client=self.client
         )
-        # --- FIX END ---
-
+        
         self.embedding_service = EmbeddingService()
         self.vector_store_service = VectorStoreService()
     
