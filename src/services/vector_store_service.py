@@ -12,8 +12,7 @@ class VectorStoreService:
             api_key=settings.QDRANT_API_KEY,
         )
         self.collection_name = "textbook_embeddings"
-        
-        # --- FIX: Changed from 768 (Gemini) to 1536 (OpenAI) ---
+
         self.vector_size = 1536  # OpenAI text-embedding-3-small standard size
 
     def recreate_collection(self):
