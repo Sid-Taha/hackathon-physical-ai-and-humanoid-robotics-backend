@@ -267,7 +267,7 @@ class TextbookAgent:
         )
         # Create OpenAI Agents SDK model with Gemini backend
         self.model = OpenAIChatCompletionsModel(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             openai_client=self.client
         )
         self.embedding_service = EmbeddingService()
